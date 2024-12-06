@@ -6,8 +6,8 @@ import kotlin.test.assertEquals
 
 private const val RESOURCE_PATH = "/day05testInput.txt"
 
-const val MIDDLE_SUM = 143
-const val MIDDLE_SUM_FIXED = 123
+private const val MIDDLE_SUM = 143
+private const val MIDDLE_SUM_FIXED = 123
 
 class Day05Test {
 
