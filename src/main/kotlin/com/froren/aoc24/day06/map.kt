@@ -37,9 +37,13 @@ data class Guard(
     var dir: Dir,
 )
 
-fun Guard.walk(map: Map) {
-    if (cell + dir in map.obstructions)
+fun Guard.walk(map: Map, additionalObstruction: Cell? = null) {
+    var nextCell = cell + dir
+
+    while (nextCell in map.obstructions || nextCell == additionalObstruction) {
         dir = dir.turnRight()
+        nextCell = cell + dir
+    }
 
     cell += dir
 }

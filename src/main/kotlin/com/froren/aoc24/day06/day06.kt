@@ -37,7 +37,7 @@ fun solvePartTwo(lines: Sequence<String>): Int {
     )
 
     while (map.hasInbound(guard.cell)) {
-        if (loopAfterTurnRight(guard.copy(), map))
+        if (map.hasInbound(guard.cell + guard.dir) && loopAfterTurnRight(guard.copy(), map))
             addedObstructions.add(guard.cell + guard.dir)
 
         guard.walk(map)
@@ -47,20 +47,19 @@ fun solvePartTwo(lines: Sequence<String>): Int {
 }
 
 fun loopAfterTurnRight(guard: Guard, map: Map): Boolean {
-    val history = mutableSetOf(guard.copy())
-
-    guard.dir = guard.dir.turnRight()
+    val obstruction = guard.cell + guard.dir
+    val history = mutableSetOf<Guard>()
 
     while (map.hasInbound(guard.cell)) {
-        history.add(guard.copy())
-
-        guard.walk(map)
+        guard.walk(map, additionalObstruction = obstruction)
 
         if (guard in history)
-            return true
+            return true.also { printLoop(map, history, obstruction, it) }
+
+        history.add(guard.copy())
     }
 
-    return false
+    return false.also { printLoop(map, history, obstruction, it) }
 }
 
 
@@ -88,4 +87,37 @@ fun getMap(lines: Sequence<String>): Map {
         obstructions = obstructions,
         guardInitial = guard,
     )
+}
+
+fun clearConsole() {
+    print("\u001b[H\u001b[2J")
+    System.out.flush()
+}
+
+fun printLoop(map: Map, history: Collection<Guard>, obstruction: Cell, isLoop: Boolean) {
+    clearConsole()
+    println(CharArray(map.width) { '=' })
+
+    val grid = Array(map.height) { CharArray(map.width) { ' ' } }
+
+    grid[obstruction.y][obstruction.x] = 'O'
+
+    history.forEach {
+        if (map.hasInbound(it.cell))
+            grid[it.cell.y][it.cell.x] = when(it.dir) {
+                Dir.UP -> '^'
+                Dir.DOWN -> 'v'
+                Dir.RIGHT -> '>'
+                Dir.LEFT -> '<'
+            }
+    }
+
+    map.obstructions.forEach {
+        grid[it.y][it.x] = '#'
+    }
+
+
+    grid.forEach(::println)
+    println("Start: ${history.first()}")
+    println("Loop Detected: $isLoop")
 }
