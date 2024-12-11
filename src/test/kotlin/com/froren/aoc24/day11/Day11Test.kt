@@ -7,8 +7,7 @@ import kotlin.test.assertEquals
 
 private const val RESOURCE_PATH = "/day11testInput.txt"
 
-private const val STONES = 22
-//private const val TRAILHEAD_RATINGS = 81
+private const val STONES = 55312
 
 class Day11Test {
 
@@ -18,16 +17,7 @@ class Day11Test {
             .reader()
             .useLines(::solvePartOne)
 
-        assertEquals(STONES, stones)
+        assertEquals(STONES.toLong(), stones)
     }
-
-//    @Test
-//    fun `Part two solves correctly` () {
-//        val trailheadRatings = loadResource(RESOURCE_PATH)
-//            .reader()
-//            .useLines(::solvePartTwo)
-//
-//        assertEquals(TRAILHEAD_RATINGS, trailheadRatings)
-//    }
 
 }
