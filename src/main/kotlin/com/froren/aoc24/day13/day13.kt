@@ -5,6 +5,7 @@ import kotlin.math.abs
 
 private val valRegex = Regex("""X[+=](\d+),.Y[+=](\d+)""")
 private const val OFFSET = 10000000000000
+
 fun main() = solveDay(
     day = 13,
     partOneSolver = ::solvePartOne,
@@ -35,7 +36,7 @@ fun ClawMachine.coins(): Long {
 fun Double.isWhole(eps: Double = 0.00001) = abs(this - this.toLong()) < eps
 
 fun getClawMachines(lines: Sequence<String>) =
-    lines.windowed(size = 4, step = 4) {
+    lines.windowed(size = 4, step = 4, partialWindows = true) {
         val a = valRegex.find(it[0])!!.let {
             Vector(
                 it.groups[1]?.value?.toLong()!!,
