@@ -53,6 +53,10 @@ fun solvePartTwo(lines: Sequence<String>): Int {
 
             variance(robots.map { it.p.x }) * variance(robots.map { it.p.y })
         }
+        .onEachIndexed { i, it ->
+            if (i == 7370)
+                printGrid(grid, robots)
+        }
         .toList()
         .let {
             it.indexOf(it.min()) + 1
@@ -111,3 +115,16 @@ data class Robot(
     val v: Vector,
     var p: Vector,
 )
+
+
+fun printGrid(grid: Area, robots: List<Robot>) {
+    val canvas = Array(grid.height) { CharArray(grid.width) { ' ' } }
+
+    robots.forEach { robot ->
+        canvas[robot.p.y][robot.p.x] = '#'
+    }
+
+    canvas.forEach {
+        println(it)
+    }
+}
