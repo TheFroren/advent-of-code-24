@@ -57,58 +57,32 @@ fun canBeMade(pattern: String, available: List<String>): Boolean {
     return false
 }
 
-fun solvePartTwo(lines: Sequence<String>): Int {
+fun solvePartTwo(lines: Sequence<String>): Long {
     val (available, patterns) = getPatterns(lines)
 
+    val cache = mutableMapOf<String, Long>()
+
     return patterns.sumOf {
-        println(it)
-        combinations(it, available)
+        combinations(it, available, cache)
     }
 }
 
-fun combinations(pattern: String, available: List<String>): Int {
-    var patternIndex = 0
-    val parts = mutableListOf(0)
+fun combinations(pattern: String, available: List<String>, cache: MutableMap<String, Long>): Long {
+    if (pattern in cache)
+        return cache[pattern]!!
 
-    var matches = 0
-
-    while (true) {
-        println("$patternIndex, $parts")
-
-        if (parts.last() >= available.size) {
-            parts.removeLast()
-
-            if (parts.isEmpty())
-                break
-
-            patternIndex -= available[parts[parts.lastIndex]].length
-
-            parts[parts.lastIndex] += 1
-            continue
+    val combinations = available.sumOf {
+        when {
+            pattern == it -> 1
+            pattern.startsWith(it) -> combinations(pattern.substring(it.length), available, cache)
+            else -> 0
         }
-
-        val tested = available[parts.last()]
-        val endIndex = patternIndex + tested.length - 1
-
-        if (
-            endIndex in pattern.indices
-            && pattern.subSequence(patternIndex ..endIndex).contentEquals(tested)
-        ) {
-            parts.add(0)
-            patternIndex += tested.length
-
-            if (patternIndex == pattern.length)
-                matches += 1
-
-            continue
-        }
-
-        parts[parts.lastIndex] += 1
     }
 
-    return matches
-}
+    cache[pattern] = combinations
 
+    return combinations
+}
 
 fun getPatterns(lines:Sequence<String>): Pair<List<String>, List<String>> {
     var firstPart = true
